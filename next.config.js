@@ -3,7 +3,18 @@ const nextConfig = {
   experimental: {},
   webpack: (config) => {
     config.externals = config.externals || []
-    config.externals.push('net', 'tls', 'child_process', 'fs/promises')
+    const nodeBuiltins = [
+      'net', 'tls', 'child_process', 'fs/promises', 'fs', 'dns',
+      'timers/promises', 'readline', 'worker_threads', 'dgram',
+      'cluster', 'http2', 'stream/promises', 'crypto', 'os',
+      'path', 'url', 'util', 'zlib', 'events', 'buffer',
+      'stream', 'string_decoder', 'sys', 'punycode', 'querystring',
+      'module', 'require-from-string', 'vm', 'v8', 'assert',
+      'console', 'constants', 'domain', 'errno', 'error-stack-traces',
+      'graceful-fs', 'internal', 'process', 'perf_hooks', 'async_hooks',
+      'diagnostics_channel', 'async_hooks', 'semver', 'source-map-support'
+    ]
+    config.externals.push(...nodeBuiltins)
     return config
   },
 }
