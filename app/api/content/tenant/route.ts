@@ -3,6 +3,31 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../auth/[...nextauth]/route'
 import clientPromise from '../../../../lib/mongodb'
 
+export async function GET(request: NextRequest) {
+  const session = await getServerSession(authOptions)
+  if (!session) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+  }
+
+  try {
+    const client = await clientPromise
+    const db = client.db('sahakari-hub')
+    const tenants = db.collection('tenants')
+    const tenant = await tenants.findOne({ domain: session.user.domain })
+    if (!tenant) {
+      return new Response(JSON.stringify({ error: 'Tenant not found' }), { status: 404 })
+    }
+    const serializedTenant = {
+      ...tenant,
+      _id: tenant._id?.toString(),
+      createdAt: tenant.createdAt?.toISOString()
+    }
+    return new Response(JSON.stringify(serializedTenant), { status: 200 })
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'Failed to fetch tenant' }), { status: 500 })
+  }
+}
+
 export async function PUT(request: NextRequest) {
   const session = await getServerSession(authOptions)
   if (!session) {

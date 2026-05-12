@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
-import { getTenantByDomain } from '../../../lib/tenant'
 
 interface Tenant {
   name: string
@@ -37,8 +36,9 @@ export default function SettingsPage() {
 
   const fetchTenant = async () => {
     if (!session?.user.domain) return
-    const data = await getTenantByDomain(session.user.domain)
-    if (data) {
+    const res = await fetch('/api/content/tenant')
+    const data = await res.json()
+    if (data && !data.error) {
       setTenant(data)
       setFormData({
         name: data.name,
