@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {},
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      return config
+    }
     config.externals = config.externals || []
     const nodeBuiltins = [
       'net', 'tls', 'child_process', 'fs/promises', 'fs', 'dns',
@@ -12,7 +15,9 @@ const nextConfig = {
       'module', 'require-from-string', 'vm', 'v8', 'assert',
       'console', 'constants', 'domain', 'errno', 'error-stack-traces',
       'graceful-fs', 'internal', 'process', 'perf_hooks', 'async_hooks',
-      'diagnostics_channel', 'async_hooks', 'semver', 'source-map-support'
+      'diagnostics_channel', 'async_hooks', 'semver', 'source-map-support',
+      'kerberos', '@mongodb-js/zstd', '@aws-sdk/credential-providers',
+      'gcp-metadata', 'snappy', 'socks', 'aws4', 'mongodb-client-encryption'
     ]
     config.externals.push(...nodeBuiltins)
     return config
