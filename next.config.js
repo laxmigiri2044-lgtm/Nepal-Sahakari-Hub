@@ -5,7 +5,6 @@ const nextConfig = {
     if (isServer) {
       return config
     }
-    config.externals = config.externals || []
     const nodeBuiltins = [
       'net', 'tls', 'child_process', 'fs/promises', 'fs', 'dns',
       'timers/promises', 'readline', 'worker_threads', 'dgram',
@@ -19,7 +18,9 @@ const nextConfig = {
       'kerberos', '@mongodb-js/zstd', '@aws-sdk/credential-providers',
       'gcp-metadata', 'snappy', 'socks', 'aws4', 'mongodb-client-encryption'
     ]
-    config.externals.push(...nodeBuiltins)
+    nodeBuiltins.forEach((builtin) => {
+      config.externals[builtin] = `require('${builtin}')`
+    })
     return config
   },
 }
