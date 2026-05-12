@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getTenantByDomain, getTenantDatabase } from '../../../lib/tenant'
+import { getTenantByDomain, getTenantDatabaseByDomain } from '../../../lib/tenant'
 import { Rate } from '../../../models/Rate'
 import Link from 'next/link'
 
@@ -15,8 +15,7 @@ export default async function RatesPage({ params }: PageProps) {
     notFound()
   }
 
-  const db = await getTenantDatabase(domain)
-  if (!db) notFound()
+  const db = await getTenantDatabaseByDomain(domain)
   const rates = await db.collection('rates').find({ isActive: true }).toArray() as Rate[]
 
   // Group rates by type

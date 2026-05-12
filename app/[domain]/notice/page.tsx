@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getTenantByDomain, getTenantDatabase } from '../../../lib/tenant'
+import { getTenantByDomain, getTenantDatabaseByDomain } from '../../../lib/tenant'
 import { Notice } from '../../../models/Notice'
 import Link from 'next/link'
 
@@ -15,8 +15,7 @@ export default async function NoticePage({ params }: PageProps) {
     notFound()
   }
 
-  const db = await getTenantDatabase(domain)
-  if (!db) notFound()
+  const db = await getTenantDatabaseByDomain(domain)
   const notices = await db.collection('notices').find({ isActive: true }).sort({ publishedAt: -1 }).toArray() as unknown as Notice[]
 
   return (

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getTenantByDomain, getTenantDatabase } from '../../../lib/tenant'
+import { getTenantByDomain, getTenantDatabaseByDomain } from '../../../lib/tenant'
 import { Service } from '../../../models/Service'
 import Link from 'next/link'
 
@@ -15,8 +15,7 @@ export default async function ServicesPage({ params }: PageProps) {
     notFound()
   }
 
-  const db = await getTenantDatabase(domain)
-  if (!db) notFound()
+  const db = await getTenantDatabaseByDomain(domain)
   const services = await db.collection('services').find({ isActive: true }).toArray() as Service[]
 
   return (

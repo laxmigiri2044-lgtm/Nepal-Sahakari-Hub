@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../../auth/[...nextauth]/route'
-import { getTenantDatabase } from '../../../../../lib/tenant'
+import { getTenantDatabaseByDomain } from '../../../../../lib/tenant'
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions)
@@ -10,10 +10,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
   }
 
   try {
-    const db = await getTenantDatabase(session.user.domain)
-    if (!db) {
-      return new Response(JSON.stringify({ error: 'Tenant not found' }), { status: 404 })
-    }
+    const db = await getTenantDatabaseByDomain(session.user.domain)
     await db.collection('notices').deleteOne({ _id: params.id })
     return new Response(JSON.stringify({ success: true }), { status: 200 })
   } catch (error) {

@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../auth/[...nextauth]/route'
-import { getTenantDatabase } from '../../../../lib/tenant'
+import { getTenantDatabaseByDomain } from '../../../../lib/tenant'
 import { Service } from '../../../../models/Service'
 
 export async function GET(request: NextRequest) {
@@ -11,10 +11,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const db = await getTenantDatabase(session.user.domain)
-    if (!db) {
-      return new Response(JSON.stringify({ error: 'Tenant not found' }), { status: 404 })
-    }
+    const db = await getTenantDatabaseByDomain(session.user.domain)
     const services = await db.collection('services').find({}).toArray()
     return new Response(JSON.stringify(services), { status: 200 })
   } catch (error) {
@@ -36,10 +33,7 @@ export async function POST(request: NextRequest) {
       return new Response(JSON.stringify({ error: 'Name is required' }), { status: 400 })
     }
 
-    const db = await getTenantDatabase(session.user.domain)
-    if (!db) {
-      return new Response(JSON.stringify({ error: 'Tenant not found' }), { status: 404 })
-    }
+    const db = await getTenantDatabaseByDomain(session.user.domain)
     const service: Service = {
       tenantId: session.user.id, // or from tenant
       name,

@@ -14,9 +14,7 @@ export async function getTenantByDomain(domain: string): Promise<Tenant | null> 
   }
 }
 
-export async function getTenantDatabase(domain: string) {
-  const tenant = await getTenantByDomain(domain)
-  if (!tenant) return null
+export async function getTenantDatabaseByDomain(domain: string) {
   const client = await clientPromise
-  return client.db(tenant.domain.replace(/\./g, '-')) // DB name from domain
+  return client.db(domain.replace(/\./g, '-'))
 }
