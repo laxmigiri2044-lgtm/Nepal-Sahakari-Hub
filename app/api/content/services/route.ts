@@ -12,6 +12,9 @@ export async function GET(request: NextRequest) {
 
   try {
     const db = await getTenantDatabase(session.user.domain)
+    if (!db) {
+      return new Response(JSON.stringify({ error: 'Tenant not found' }), { status: 404 })
+    }
     const services = await db.collection('services').find({}).toArray()
     return new Response(JSON.stringify(services), { status: 200 })
   } catch (error) {
@@ -34,6 +37,9 @@ export async function POST(request: NextRequest) {
     }
 
     const db = await getTenantDatabase(session.user.domain)
+    if (!db) {
+      return new Response(JSON.stringify({ error: 'Tenant not found' }), { status: 404 })
+    }
     const service: Service = {
       tenantId: session.user.id, // or from tenant
       name,

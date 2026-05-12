@@ -25,6 +25,16 @@ export default async function DomainHome({ params }: PageProps) {
   }
 
   const db = await getTenantDatabase(domain)
+  if (!db) {
+    return (
+      <div className="min-h-screen bg-bg flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-text mb-4">Coming Soon</h1>
+          <p className="text-text-muted">यो वेबसाइट चाँडै उपलब्ध हुनेछ।</p>
+        </div>
+      </div>
+    )
+  }
   const services = await db.collection('services').find({ isActive: true }).toArray() as Service[]
   const rates = await db.collection('rates').find({ isActive: true }).toArray() as Rate[]
   const notices = await db.collection('notices').find({ isActive: true }).sort({ publishedAt: -1 }).limit(3).toArray() as Notice[]

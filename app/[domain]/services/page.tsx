@@ -16,6 +16,7 @@ export default async function ServicesPage({ params }: PageProps) {
   }
 
   const db = await getTenantDatabase(domain)
+  if (!db) notFound()
   const services = await db.collection('services').find({ isActive: true }).toArray() as Service[]
 
   return (

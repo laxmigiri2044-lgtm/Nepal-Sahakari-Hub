@@ -16,6 +16,7 @@ export default async function NoticePage({ params }: PageProps) {
   }
 
   const db = await getTenantDatabase(domain)
+  if (!db) notFound()
   const notices = await db.collection('notices').find({ isActive: true }).sort({ publishedAt: -1 }).toArray() as unknown as Notice[]
 
   return (

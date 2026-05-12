@@ -16,6 +16,7 @@ export default async function RatesPage({ params }: PageProps) {
   }
 
   const db = await getTenantDatabase(domain)
+  if (!db) notFound()
   const rates = await db.collection('rates').find({ isActive: true }).toArray() as Rate[]
 
   // Group rates by type
