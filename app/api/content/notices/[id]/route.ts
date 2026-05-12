@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { getServerSession } from 'next-auth/next'
-import { authOptions } from '../../../auth/[...nextauth]/route'
+import { authOptions } from '../../../../auth/[...nextauth]/route'
 import { getTenantDatabase } from '../../../../../lib/tenant'
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
